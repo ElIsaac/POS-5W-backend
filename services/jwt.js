@@ -10,7 +10,7 @@ exports.accessToken = (usuario)=>{
         nombre: usuario.nombre,
         apellidos: usuario.apellidos,
         email: usuario.email,
-        rol: usuario.rol,
+        admin: usuario.admin,
         fechaInicio: moment().unix(),
         fechaExpiracion: moment().add(5, "hours").unix()
     }
