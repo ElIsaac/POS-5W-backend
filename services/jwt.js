@@ -1,6 +1,5 @@
 const jwt = require('jwt-simple');
 const moment = require('moment');
-const usuario = require('../controllers/usuario');
 
 const {SECRET_KEY} =require('./secret-key')
 

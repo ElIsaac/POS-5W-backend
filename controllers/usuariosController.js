@@ -1,8 +1,36 @@
 const Usuario = require("../models/Usuario")
+const jwt = require("../services/jwt")
 
 ///////////Peticion http "Post" para iniciar sesion////////
 async function iniciar(req, res){
-    res.send("actualizar producto")
+    const {email, contrasenia}=req.body;
+
+    try {
+        if(email==="" || contrasenia===""){
+           return res.json({"error": "debe de llenar todos los campos"}).status(400)
+        }
+
+        const usuario = await Usuario.findOne({ email });
+        if (!usuario) {
+            return res.status(404).json({ mensaje: "usuario inexistente" })
+        }
+
+        const contraseniaValida = await usuario.matchPassword(req.body.contrasenia, usuario.contrasenia);
+        if (!contraseniaValida) {
+            return res.status(400).json({ mensaje: "contraseña incorrecta" })
+        }
+        else{
+            return res.json({
+                AccessToken: jwt.accessToken(usuario),
+                RefreshToken: jwt.refreshToken(usuario)
+            })
+        }
+
+    } catch (error) {
+
+        res.json( {"error": "ha ocurrido un error en el servidor"} ).status(500)
+        
+    }
 }
 
 ///////////Peticion http "Post" para registrar usuarios////////
@@ -12,21 +40,23 @@ async function registrar(req, res){
         if(nombre=="" || apellidos=="" || email=="" || contrasenia=="" || confirmaContrasenia=="" ){
             res.json({"error": "debe de llenar todos los campos"}).status(400)
         }
-        if(contrasenia!==confirmaContrasenia){
+        else if(contrasenia!==confirmaContrasenia){
             res.json({"error":"Las contraseñas no coinciden"}).status(400)
         }
-        if(contrasenia.length <= 4){
+        else if(contrasenia.length <= 4){
             res.json({"mensaje":"la contraseña debe de ser mayor a 4 caracteres"}).status(400)
         }
-        const nuevoUsuario=new Usuario({
-            nombre:nombre,
-             apellidos:apellidos,
-             email:email.toLowerCase(),
-             admin: false,
-        })
-        nuevoUsuario.contrasenia = await nuevoUsuario.encriptar(contrasenia)
-        await nuevoUsuario.save()
-        res.json({"mensaje": "usuario guardado"}).status(200)
+        else{
+            const nuevoUsuario=new Usuario({
+                nombre:nombre,
+                 apellidos:apellidos,
+                 email:email.toLowerCase(),
+                 admin: false,
+            })
+            nuevoUsuario.contrasenia = await nuevoUsuario.encriptar(contrasenia)
+            await nuevoUsuario.save()
+            res.json({"mensaje": "usuario guardado"}).status(200)
+        }
     } catch (error) {
         
         if(error.code === 11000){
