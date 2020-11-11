@@ -12,7 +12,18 @@ async function traerProductos(req, res){
 
 ////////Peticion http "get" para traer UN SOLO producto/////////
 async function traerProducto(req, res){
-    res.send("Un solo producto")
+    const idProducto=req.params.id
+    try {
+        const producto = await Producto.findById(idProducto)
+        if(producto){
+            res.json(producto)
+        }
+        else{
+            res.json({error: "El producto cone el id: "+idProducto+" no existe"})
+        }
+    } catch (error) {
+        res.json({"error": "Error de servidor"+error})
+    }
 }
 
 async function nuevoProducto(req, res){
@@ -35,7 +46,18 @@ async function nuevoProducto(req, res){
 
 ///////////Peticion http "put" para actuakizar productos////////
 async function actualizarProducto(req, res){
-    res.send("actualizar producto")
+    const idProducto=req.params.id
+    try {
+        const producto = await Producto.findByIdAndUpdate(idProducto, req.body)
+        if(producto){
+            res.json({"mensaje": "producto actualizado"})
+        }
+        else{
+            res.json({error: "El producto cone el id: "+idProducto+" no existe"})
+        }
+    } catch (error) {
+        res.json({"error": "Error de servidor"+error})
+    }
 }
 
 ///////////Peticion http "delete" para eliminar un productos////////
@@ -44,7 +66,7 @@ async function borrarProducto(req, res){
     try {
         const borrar = await Producto.findByIdAndDelete(idProducto)
         if(borrar){
-            res.json({mensaje: ""})
+            res.json({mensaje: "Producto eliminado correctamente"})
         }
         else{
             res.json({error: "El producto cone el id: "+idProducto+" no existe"})
