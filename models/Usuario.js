@@ -8,11 +8,19 @@ const UsuarioSchema = new Schema({
      type: String, 
      required: true 
   },
+  apellidos: {
+    type: String, 
+    required: true 
+ },
   email: { 
     type: String, 
     required: true,
     unique: true
   },
+  admin: {
+    type: Boolean, 
+    required: true 
+ },
   contrasenia: {
      type: String, 
      required: true 

@@ -3,7 +3,7 @@ const usuariosConroller = require('../controllers/usuariosController');
 const router = Router();
 
 
-router.get("/inicia-sesion", usuariosConroller.iniciar);
+router.post("/inicia-sesion", usuariosConroller.iniciar);
 
 router.post("/registrate", usuariosConroller.registrar);
 
