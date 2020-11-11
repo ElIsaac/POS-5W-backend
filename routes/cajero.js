@@ -1,8 +1,8 @@
 const { Router } =require('express');
 const router = Router();
+const md_isAuth=require("../middlewares/md_isAuth")
+const cajeroConroller = require('../controllers/cajeroController');
 
-const usuarioComunConroller = require('../controllers/cajeroController');
-
-router.get("/cobrar", usuarioComunConroller.cobrar)
+router.post("/cobrar", [md_isAuth.cajeroAuth], cajeroConroller.cobrar)
 
 module.exports = router

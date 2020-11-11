@@ -2,10 +2,10 @@ const { Schema, model } = require("mongoose")
 
 
 const TicketSchema = new Schema({
-    productos: [{
-       type: Object, 
+    productos: {
+       type: Array, 
        required: true 
-    }],
+    },
     precioFinal: { 
       type: Number, 
       required: true 
