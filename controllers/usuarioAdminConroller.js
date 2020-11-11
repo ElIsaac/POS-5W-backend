@@ -40,7 +40,18 @@ async function actualizarProducto(req, res){
 
 ///////////Peticion http "delete" para eliminar un productos////////
 async function borrarProducto(req, res){
-    res.send("borrar un producto")
+    const idProducto=req.params.id
+    try {
+        const borrar = await Producto.findByIdAndDelete(idProducto)
+        if(borrar){
+            res.json({mensaje: ""})
+        }
+        else{
+            res.json({error: "El producto cone el id: "+idProducto+" no existe"})
+        }
+    } catch (error) {
+        res.json({"error": "Error de servidor"+error})
+    }
 }
 
 module.exports={
