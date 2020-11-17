@@ -12,12 +12,12 @@ async function iniciar(req, res){
 
         const usuario = await Usuario.findOne({ email });
         if (!usuario) {
-            return res.status(404).json({ mensaje: "usuario inexistente" })
+            return res.status(404).json({ error: "usuario inexistente" })
         }
 
         const contraseniaValida = await usuario.matchPassword(req.body.contrasenia, usuario.contrasenia);
         if (!contraseniaValida) {
-            return res.status(400).json({ mensaje: "contraseña incorrecta" })
+            return res.status(400).json({ error: "contraseña incorrecta" })
         }
         else{
             return res.json({
@@ -44,7 +44,7 @@ async function registrar(req, res){
             res.json({"error":"Las contraseñas no coinciden"}).status(400)
         }
         else if(contrasenia.length <= 4){
-            res.json({"mensaje":"la contraseña debe de ser mayor a 4 caracteres"}).status(400)
+            res.json({"error":"la contraseña debe de ser mayor a 4 caracteres"}).status(400)
         }
         else{
             const nuevoUsuario=new Usuario({

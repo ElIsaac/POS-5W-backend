@@ -1,30 +1,8 @@
 const Producto = require("../models/Producto")
 
 /////////Peticion http "get" pra traer TODOS los productos///////
-async function traerProductos(req, res){
-    try {
-        const productos = await Producto.find()
-        res.json(productos).status(200)
-    } catch (error) {
-        res.json({"error": "ha ocurrido in error en el servidor de tipo "+error})
-    }
-}
 
-////////Peticion http "get" para traer UN SOLO producto/////////
-async function traerProducto(req, res){
-    const idProducto=req.params.id
-    try {
-        const producto = await Producto.findById(idProducto)
-        if(producto){
-            res.json(producto)
-        }
-        else{
-            res.json({error: "El producto cone el id: "+idProducto+" no existe"})
-        }
-    } catch (error) {
-        res.json({"error": "Error de servidor"+error})
-    }
-}
+
 
 async function nuevoProducto(req, res){
     const { nombre/* , imagen */, precio }=req.body
@@ -79,7 +57,5 @@ async function borrarProducto(req, res){
 module.exports={
     actualizarProducto,
     borrarProducto,
-    traerProducto,
-    nuevoProducto,
-    traerProductos,
+    nuevoProducto
 }
