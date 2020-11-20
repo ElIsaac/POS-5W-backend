@@ -21,8 +21,7 @@ async function iniciar(req, res){
         }
         else{
             return res.json({
-                AccessToken: jwt.accessToken(usuario),
-                RefreshToken: jwt.refreshToken(usuario)
+                AccessToken: jwt.accessToken(usuario)
             })
         }
 
