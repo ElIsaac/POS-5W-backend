@@ -9,5 +9,6 @@ router.post("/admin/productos/nuevo", [md_isAuth.auth], adminConroller.nuevoProd
 router.delete("/admin/productos/:id", [md_isAuth.auth], adminConroller.borrarProducto)
 
 router.put("/admin/productos/:id", [md_isAuth.auth], adminConroller.actualizarProducto)
+router.put("/admin/usuario/:id", [md_isAuth.auth], adminConroller.actualizarUsuario)
 
 module.exports = router
