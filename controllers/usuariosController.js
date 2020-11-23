@@ -1,4 +1,5 @@
-const Usuario = require("../models/Usuario")
+const Usuario = require("../models/Usuario");
+const { encriptar, comparar } = require("../services/criptografia");
 const jwt = require("../services/jwt")
 
 ///////////Peticion http "Post" para iniciar sesion////////
@@ -15,7 +16,7 @@ async function iniciar(req, res){
             return res.status(404).json({ error: "usuario inexistente" })
         }
 
-        const contraseniaValida = await usuario.matchPassword(req.body.contrasenia, usuario.contrasenia);
+        const contraseniaValida = await comparar(req.body.contrasenia, usuario.contrasenia);
         if (!contraseniaValida) {
             return res.status(400).json({ error: "contraseña incorrecta" })
         }
@@ -26,8 +27,8 @@ async function iniciar(req, res){
         }
 
     } catch (error) {
-
-        res.json( {"error": "ha ocurrido un error en el servidor"} ).status(500)
+        console.log(error)
+        res.json( {"error": "ha ocurrido un error en el servidor "} ).status(500)
         
     }
 }
@@ -52,7 +53,7 @@ async function registrar(req, res){
                  email:email.toLowerCase(),
                  admin: false,
             })
-            nuevoUsuario.contrasenia = await nuevoUsuario.encriptar(contrasenia)
+            nuevoUsuario.contrasenia = await encriptar(contrasenia)
             await nuevoUsuario.save()
             res.json({"mensaje": "usuario guardado"}).status(200)
         }
