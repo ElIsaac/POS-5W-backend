@@ -1,6 +1,6 @@
 const Producto = require("../models/Producto")
 const Ticket = require("../models/Ticket")
-const jwt = require('jwt-simple');
+const jwt = require('../services/jwt');
 const pdf = require('html-pdf');
 const path = require("path")
 
@@ -14,7 +14,7 @@ async function cobrar(req, res) {
     const token = req.headers.authorization.replace(/['"]+/g, "")
 
     try {
-        var payload = jwt.decode(token, SECRET_KEY)
+        var payload = jwt.decodeToken(token, SECRET_KEY)
         var pFinal = 0
 
         const aVer = await Promise.all(
@@ -59,10 +59,16 @@ async function traerProducto(req, res){
             res.json(producto)
         }
         else{
-            res.json({error: "El producto cone el id: "+idProducto+" no existe"})
+            res.json({error: "El producto con el id: "+idProducto+" no existe"})
         }
     } catch (error) {
-        res.json({"error": "Error de servidor"+error})
+        if(error.name==="CastError"){
+            res.json({error: "El id: "+idProducto+" tiene caracteres faltantes o sobrantes, favor de verificarlo"})
+        }else{
+
+            res.json({"error": "Error de servidor"+error})
+
+        }
     }
 }
 

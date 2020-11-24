@@ -1,4 +1,4 @@
-const jwt = require('jwt-simple');
+const jwt = require('../services/jwt');
 const moment=require('moment')
 
 ////////Palabra secreta
@@ -14,7 +14,7 @@ exports.auth=(req, res, next)=>{
 
     const token = req.headers.authorization.replace(/['"]+/g, "")
     try {
-        var payload=jwt.decode(token, SECRET_KEY)
+        var payload=jwt.decodeToken(token, SECRET_KEY)
         if(payload.exp <= moment.unix()){
             return res
         .status(403)

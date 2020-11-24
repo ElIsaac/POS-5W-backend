@@ -1,4 +1,4 @@
-const jwt = require('jwt-simple');
+var jwt = require('jsonwebtoken');
 const moment = require('moment');
 
 const {SECRET_KEY} =require('./secret-key')
@@ -13,18 +13,18 @@ exports.accessToken = (usuario)=>{
         fechaInicio: moment().unix(),
         fechaExpiracion: moment().add(5, "hours").unix()
     }
-    return jwt.encode(payload, SECRET_KEY)
+    return jwt.sign(payload, SECRET_KEY, {algorithm: "HS256"})
 }
 
-exports.refreshToken = (usuario)=>{
-    const payload={
-        id: usuario._id,
-        fechaExpiracion: moment().add(30, "days").unix()
-    }
-    return jwt.encode(payload, SECRET_KEY)
-}
+
 
 exports.decodeToken = (token)=>{
     
-    return jwt.decode(token, SECRET_KEY, true)
+    try {
+        const decode = jwt.verify(token, SECRET_KEY)
+        return decode
+    } catch (error) {
+        console.log(err)
+        return null
+    }
 }
