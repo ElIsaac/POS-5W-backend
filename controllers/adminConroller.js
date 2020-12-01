@@ -47,7 +47,7 @@ async function actualizarUsuario(req, res){
 async function nuevoProducto(req, res){
     const { nombre/* , imagen */, precio }=req.body
     try {
-        if( nombre==="" /* || imagen==="" */ || precio==="" ){
+        if( nombre==="" /* || imagen==="" */ || precio==="" || !nombre || !precio){
             return res.json({error: "Debe de llenar todos los campos"})
         }
         const nuevoProducto=new Producto({
