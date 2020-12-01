@@ -56,7 +56,7 @@ async function nuevoProducto(req, res){
         })
         nuevoProducto.imagen = "Aun nop"
         await nuevoProducto.save()
-        res.json(nuevoProducto).status(200)
+        res.json({"mensaje": "Producto agregado correctamente"}).status(200)
     } catch (error) {
         res.json({"error": "ha ocurrido in error en el servidor de tipo "+error})
     }
