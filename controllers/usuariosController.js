@@ -68,7 +68,12 @@ async function registrar(req, res){
     }
 }
 
+function prueba(req, res){
+    res.json({mensaje: "coneccion establecida"})
+}
+
 module.exports={
     registrar,
     iniciar,
+    prueba
 }
