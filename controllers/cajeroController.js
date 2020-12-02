@@ -80,8 +80,49 @@ async function traerProductos(req, res){
         res.json({"error": "ha ocurrido in error en el servidor de tipo "+error})
     }
 }
+
+async function traerTickets(req, res){
+    try {
+        const tickets=await Ticket.find()
+        if(tickets){
+            res.json(tickets).status(200)
+        }else{
+            res.json({error: "no hay tickets disponibles"}).status(404)
+        }
+    } catch (error) {
+        res.json({error: "ha ocurrrido un error en el servidor. "+error}).status(500)
+    }
+}
+
+async function mandarPdfTicket(req, res){
+    const {id}=req.params
+    try {
+        const ticket=await Ticket.findById(id)
+        if(ticket){
+            res.sendFile(path.join(__dirname, "..")+'/pdfs/'+ticket._id+'.pdf')
+            
+        }else{
+            res.json({error: "El ticket que busca no existe"}).status(404)
+        }
+    } catch (error) {
+        console.log(error.name)
+        switch (error.name) {
+            case 'CastError':
+                res.json({error: "Su id esta incompleto o le sobran caracteres, favor de verificarlo"}).status(404)
+                break;
+        
+            default:
+                res.json({error: "ha ocurrrido un error en el servidor. "+error}).status(500)
+                break;
+        }
+        
+    }
+}
+
 module.exports = {
     cobrar, 
     traerProducto,
-    traerProductos
+    traerProductos,
+    mandarPdfTicket,
+    traerTickets
 }
