@@ -6,8 +6,8 @@ const { encriptar } = require("../services/criptografia")
 async function actualizarUsuario(req, res){
     const { nombre, apellidos, email, contrasenia, confirmaContrasenia }=req.body
     try {
-        if(contrasenia){
-            if(!confirmaContrasenia){
+        if(contrasenia!==""&&confirmaContrasenia!==""){
+            if(contrasenia.length > 4 && confirmaContrasenia===""){
                 res.json({error: "debe de llenar los dos campos de contraseña"})
             }
             else if(contrasenia!==confirmaContrasenia){
@@ -15,19 +15,33 @@ async function actualizarUsuario(req, res){
             }
             else if(contrasenia.length <= 4){
                 res.json({"error":"la contraseña debe de ser mayor a 4 caracteres"}).status(400)
-            }
-        }
-        
-            const datos=req.body
-            if(contrasenia){
+            }else{
+                const datos=req.body
                 datos.contrasenia = await encriptar(contrasenia)
+                const editado=await Usuario.findByIdAndUpdate(req.params.id, datos)
+                if(editado){
+                    res.json({"mensaje": "usuario guardado"}).status(200)
+                }else{
+                    res.json({error:"Usuario no encontrado"})
+                }
             }
+        }else{
+            console.log(req.body)
+            const datos={
+                nombre: req.body.nombre,
+                apellidos: req.body.apellidos,
+                email: req.body.email,
+                admin: req.body.admin,
+            }
+            
             const editado=await Usuario.findByIdAndUpdate(req.params.id, datos)
             if(editado){
                 res.json({"mensaje": "usuario guardado"}).status(200)
             }else{
                 res.json({error:"Usuario no encontrado"})
             }
+        }
+            
         
     } catch (error) {
         
@@ -129,7 +143,7 @@ async function traerTickets(req, res){
 
 async function traerUsuarios(req,res){
     try {
-        const usuarios=await Usuario.find({}, ['_id', 'nombre', 'apellidos', 'email', 'admin'])
+        const usuarios=await Usuario.find({}, ['_id', 'nombre', 'apellidos', 'email', 'admin', 'avatar'])
         if(usuarios.length >= 1){
             res.json(usuarios).status(200)
         }else{
@@ -140,6 +154,34 @@ async function traerUsuarios(req,res){
     }
 }
 
+async function subirAvatar(req, res){
+    const {id} = req.params
+        
+         if(req.file){
+            const arr=req.file.originalname.split(".")
+            const extName=arr[arr.length-1]
+            const nombreImagen=id +"."+extName
+            const datos={avatar:nombreImagen}
+                try{
+                    
+                    const usuarioActualizado = await Usuario.findByIdAndUpdate(id, datos)
+                    if(!usuarioActualizado){
+                        res.status(404).json({mensaje: "Usuario no encontrado"})
+                    }else{
+                       
+                        res.status(200).json({avatarName: nombreImagen})
+                    }
+                }catch(err){
+                    res.status(500).json({mensaje: "error del servidor"+err})
+                }
+                
+            
+        }  
+    
+}
+
+
+
 module.exports={
     actualizarProducto,
     borrarProducto,
@@ -147,5 +189,6 @@ module.exports={
     actualizarUsuario, 
     traerTickets,
     traerUsuarios,
-    eliminarUsuario
+    eliminarUsuario,
+    subirAvatar
 }
