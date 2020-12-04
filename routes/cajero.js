@@ -9,7 +9,7 @@ router.get("/productos/todos",[md_isAuth.cajeroAuth], cajeroConroller.traerProdu
 
 router.get("/productos/:id", [md_isAuth.cajeroAuth], cajeroConroller.traerProducto)
 
-router.get("/ticket/todos", [md_isAuth.cajeroAuth], cajeroConroller.traerTickets)
+router.get("/ticket/todos/:idCajero", [md_isAuth.cajeroAuth], cajeroConroller.traerMisTickets)
 
 
 router.get("/ticket/:id", [md_isAuth.cajeroAuth], cajeroConroller.mandarPdfTicket)

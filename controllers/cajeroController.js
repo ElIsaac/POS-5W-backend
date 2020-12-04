@@ -81,10 +81,11 @@ async function traerProductos(req, res){
     }
 }
 
-async function traerTickets(req, res){
+async function traerMisTickets(req, res){
+    const idCajero=req.params.idCajero
     try {
-        const tickets=await Ticket.find()
-        if(tickets){
+        const tickets=await Ticket.find({idCajero:idCajero})
+        if(tickets.length >= 1){
             res.json(tickets).status(200)
         }else{
             res.json({error: "no hay tickets disponibles"}).status(404)
@@ -124,5 +125,5 @@ module.exports = {
     traerProducto,
     traerProductos,
     mandarPdfTicket,
-    traerTickets
+    traerMisTickets
 }
