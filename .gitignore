@@ -2,7 +2,7 @@
 
 #cosas que no quiero
 *.pdf
-
+/img/*.*
 # dependencies
 /node_modules
 /.pnp
