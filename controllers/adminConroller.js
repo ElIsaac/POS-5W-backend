@@ -1,5 +1,6 @@
 const Producto = require("../models/Producto")
 const Usuario=require("../models/Usuario")
+const Ticket = require("../models/Ticket")
 const { encriptar } = require("../services/criptografia")
 
 async function actualizarUsuario(req, res){
@@ -17,17 +18,15 @@ async function actualizarUsuario(req, res){
             }
         }
         
-            console.log(req.body)
             const datos=req.body
             if(contrasenia){
                 datos.contrasenia = await encriptar(contrasenia)
-                console.log(datos.contrasenia)
             }
             const editado=await Usuario.findByIdAndUpdate(req.params.id, datos)
             if(editado){
                 res.json({"mensaje": "usuario guardado"}).status(200)
             }else{
-                res.json({no:"no"})
+                res.json({error:"Usuario no encontrado"})
             }
         
     } catch (error) {
@@ -39,6 +38,25 @@ async function actualizarUsuario(req, res){
             console.log(error)
             res.json( {"error": "ha ocurrido un error en el servidor "+error} ).status(500)
         }
+    }
+}
+
+async function eliminarUsuario(req, res){
+    const id=req.params.id
+    try {
+        
+            const eliminar=await Usuario.findByIdAndDelete(id)
+            if(eliminar){
+                res.json({"mensaje": "usuario eliminado"}).status(200)
+            }else{
+                res.json({error:"Usuario no encontrado"})
+            }
+        
+    } catch (error) {
+        
+            console.log(error)
+            res.json( {"error": "ha ocurrido un error en el servidor "+error} ).status(500)
+        
     }
 }
 
@@ -94,9 +112,40 @@ async function borrarProducto(req, res){
     }
 }
 
+
+async function traerTickets(req, res){
+    const idCajero=req.params.idCajero
+    try {
+        const tickets=await Ticket.find()
+        if(tickets.length >= 1){
+            res.json(tickets).status(200)
+        }else{
+            res.json({error: "no hay tickets disponibles"}).status(404)
+        }
+    } catch (error) {
+        res.json({error: "ha ocurrrido un error en el servidor. "+error}).status(500)
+    }
+}
+
+async function traerUsuarios(req,res){
+    try {
+        const usuarios=await Usuario.find({}, ['_id', 'nombre', 'apellidos', 'email', 'admin'])
+        if(usuarios.length >= 1){
+            res.json(usuarios).status(200)
+        }else{
+            res.json({error: "no hay usuarios disponibles"}).status(404)
+        }
+    } catch (error) {
+        res.json({error: "ha ocurrrido un error en el servidor. "+error}).status(500)
+    }
+}
+
 module.exports={
     actualizarProducto,
     borrarProducto,
     nuevoProducto, 
-    actualizarUsuario
+    actualizarUsuario, 
+    traerTickets,
+    traerUsuarios,
+    eliminarUsuario
 }
