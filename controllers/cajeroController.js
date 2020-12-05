@@ -96,6 +96,32 @@ async function traerMisTickets(req, res){
     }
 }
 
+async function subirAvatar(req, res){
+    const {id} = req.params
+        
+         if(req.file){
+            const arr=req.file.originalname.split(".")
+            const extName=arr[arr.length-1]
+            const nombreImagen=id +"."+extName
+            const datos={avatar:nombreImagen}
+                try{
+                    
+                    const usuarioActualizado = await Usuario.findByIdAndUpdate(id, datos)
+                    if(!usuarioActualizado){
+                        res.status(404).json({mensaje: "Usuario no encontrado"})
+                    }else{
+                       
+                        res.status(200).json({avatarName: nombreImagen})
+                    }
+                }catch(err){
+                    res.status(500).json({mensaje: "error del servidor"+err})
+                }
+                
+            
+        }  
+    
+}
+
 async function mandarPdfTicket(req, res){
     const {id}=req.params
     try {
@@ -153,4 +179,5 @@ module.exports = {
     mandarPdfTicket,
     traerMisTickets,
     mandarAvatar,
+    subirAvatar
 }
