@@ -1,7 +1,7 @@
 
 const mongoose=require('mongoose');
 
-mongoose.connect('mongodb://localhost/tiendita',{
+mongoose.connect(process.env.BD||'mongodb://localhost/tiendita',{
     useNewUrlParser: true,
     useFindAndModify: false,
     useUnifiedTopology: true, 
